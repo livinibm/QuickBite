@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuickBite - Home</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="logo">QuickBite</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+
+            </ul>
+        </nav>
+    </header>
+
+
+
+
+    <!-- Hero -->
+
+
+    <div class="banner">
+        <section class="hero" id="home">
+            <h1>Fast & Fresh Food Delivered to You</h1>
+            <p>Delicious meals just a click away!</p>
+
+        </section>
+    </div>
+
+
+    <section class="dishes" id="dishes">
+        <h2>Popular Dishes</h2>
+        <div class="dish-list">
+            <div class="dish">
+                <img src="C:\xampp\htdocs\food_delivery\Assets\cheeseburger.jpg" alt="Cheese Burger" />
+                <h3>Cheese Burger</h3>
+                <p>Rs. 450</p>
+            </div>
+            <div class="dish">
+                <img src="C:\xampp\htdocs\food_delivery\Assets\chickenpizza.jpg" alt="Chicken Pizza" />
+                <h3>Chicken Pizza</h3>
+                <p>Rs. 900</p>
+            </div>
+            <div class="dish">
+                <img src="C:\xampp\htdocs\food_delivery\Assets\noodles.jpg" alt="Veg Noodles" />
+                <h3>Veg Noodles</h3>
+                <p>Rs. 550</p>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <div class="main-content">
+        <h2>Our Menu</h2>
+        <div class="container">
+            <div class="category-filter">
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="Pizza">Pizza</option>
+                    <option value="Burgers">Burgers</option>
+                    <option value="Salads">Salads</option>
+                    <option value="Appetizers">Appetizers</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Beverages">Beverages</option>
+                </select>
+                <button onclick="filterMenu()">Filter</button>
+            </div>
+
+            <div class="menu-grid" id="menuGrid">
+                <!-- Menu items will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- About -->
+    <section class="about" id="about">
+        <h2>About Us</h2>
+        <p>At QuickBite, we deliver hot, delicious food to your doorstep with speed and care. Experience flavor and
+            convenience like never before.</p>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+        <h2>Contact Us</h2>
+        <form>
+            <input type="text" placeholder="Your Name" required />
+            <input type="email" placeholder="Your Email" required />
+            <textarea rows="4" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 QuickBite. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
