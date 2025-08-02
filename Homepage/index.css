@@ -70,7 +70,7 @@ body {
 
 .banner {
     /* Use the correct path to your image here */
-    background-image: url('C:\\xampp\\htdocs\\food_delivery\\Assets\\restuarent.jpeg');
+    background-image: url('C:\xampp\htdocs\food_delivery\Assets\restuarent.jpeg');
     background-size: cover;
     background-position: center;
     position: relative;
