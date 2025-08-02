@@ -1,0 +1,101 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fff5f5;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 700px;
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.main-heading {
+  color: red;
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  background-color: red;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: darkred;
+}
+
+/* Cart & Summary */
+.summary-box {
+  background-color: #fff0f0;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+.summary-box h2 {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.item {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.item img {
+  width: 80px;
+  height: 80px;
+  margin-right: 15px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.details p {
+  margin: 2px 0;
+}
+
+/* Bill Section */
+.bill {
+  background: #ffe6e6;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+
+.bill p {
+  margin: 6px 0;
+  font-weight: bold;
+}
+
+.bill .total {
+  color: red;
+  font-size: 18px;
+}
