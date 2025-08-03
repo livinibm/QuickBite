@@ -1,101 +1,215 @@
+/* Custom styles for the order page */
 body {
-  font-family: Arial, sans-serif;
-  background: #fff5f5;
-  margin: 0;
-  padding: 0;
+    /* Set a specific padding-top to create a small gap.
+    This overrides the default from index.css. */
+    padding-top: 20px;
+    background-color: #f0f2f5;
+    /* Added a background image to make the page more attractive */
+    background-image: url('https://images.unsplash.com/photo-1543787729-16a695b29074?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1920&h=1080&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .container {
-  max-width: 700px;
-  margin: 50px auto;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
-  padding: 30px;
+    /* Set the margin-top to 0 to prevent a double-gap */
+    margin-top: 0;
+    /* Centers the container horizontally */
+    margin-left: auto;
+    margin-right: auto;
+    /* Increase the maximum width of the content area for a wider form */
+    max-width: 90%;
+    padding: 0 1rem 2rem; /* Add some bottom padding for spacing */
 }
 
-.main-heading {
-  color: red;
-  text-align: center;
-  font-size: 32px;
-  margin-bottom: 20px;
+/* Make the form itself wider */
+form {
+    max-width: 800px; /* This value controls the white box's width */
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95); /* Semi-transparent white to see the background */
+    backdrop-filter: blur(5px); /* Adds a subtle blur effect to the background behind the form */
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    
+    /* Reduced the gap between form elements */
+    gap: 1rem;
+    
+    animation: fadeIn 0.8s ease-in-out;
 }
 
-form label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-form input,
-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+h1.main-heading {
+    text-align: center;
+    color: #333;
+    
+    /* Reduced margin-bottom for a more compact look */
+    margin-bottom: 1.5rem;
+    
+    font-size: 2.5rem; /* Slightly larger heading */
+    letter-spacing: 1px;
+    font-weight: 600;
 }
 
-form button {
-  background-color: red;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  width: 100%;
-  margin-top: 20px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
+label {
+    font-weight: bold;
+    color: #444;
+    
+    /* Reduced margin-bottom for a more compact look */
+    margin-bottom: 0.25rem;
+    
+    font-size: 1.1rem;
 }
 
-form button:hover {
-  background-color: darkred;
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Cart & Summary */
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #e57373; /* Warmer focus color */
+    box-shadow: 0 0 8px rgba(229, 115, 115, 0.6);
+}
+
 .summary-box {
-  background-color: #fff0f0;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 30px;
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 1.5rem;
+    
+    /* Reduced margin-top for a more compact look */
+    margin-top: 1.5rem;
+    
+    display: flex;
+    flex-direction: column;
+    
+    /* Reduced the gap between summary box elements */
+    gap: 0.8rem;
+    
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .summary-box h2 {
-  color: red;
-  margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e57373; /* Subtle underline effect */
+    padding-bottom: 0.5rem;
+    text-align: center;
 }
 
 .item {
-  display: flex;
-  margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1rem;
+    transition: transform 0.2s;
+}
+
+.item:hover {
+    transform: translateX(5px);
+}
+
+.item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .item img {
-  width: 80px;
-  height: 80px;
-  margin-right: 15px;
-  border-radius: 10px;
-  object-fit: cover;
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.details p {
-  margin: 2px 0;
+.item .details {
+    flex-grow: 1;
 }
 
-/* Bill Section */
+.item p {
+    margin: 0;
+    line-height: 1.5;
+    color: #555;
+}
+
 .bill {
-  background: #ffe6e6;
-  padding: 15px;
-  margin-top: 15px;
-  border-radius: 10px;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px dashed #ddd;
 }
 
 .bill p {
-  margin: 6px 0;
-  font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    font-size: 1.1rem;
+    color: #444;
+    padding: 0.5rem 0;
 }
 
 .bill .total {
-  color: red;
-  font-size: 18px;
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: #d32f2f; /* Stronger total color */
+    margin-top: 1rem;
+    border-top: 2px solid #e57373;
+    padding-top: 1rem;
+}
+
+button[type="submit"] {
+    background-color: #d32f2f; /* A deeper, more appealing red */
+    color: white;
+    padding: 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    
+    /* Reduced margin-top for a more compact look */
+    margin-top: 1.5rem;
+    
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+}
+
+button[type="submit"]:hover {
+    background-color: #b71c1c;
+    transform: translateY(-2px);
+}
+
+/* Style for the Order Summary textarea */
+textarea#order_items {
+    width: 100%;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    color: #555;
+    font-size: 0.9rem;
+    resize: none;
+    cursor: default;
 }

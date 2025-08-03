@@ -1,14 +1,29 @@
 <?php
 session_start();
-$session_id = session_id();
+
+if (!isset($_SESSION['user_id'])) {
+    // If the user is not logged in, redirect them to the login page.
+    header('Location: ../reglogin/auth.php');
+    exit();
+}
+
+// The user ID should be retrieved from the session in a live environment.
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} else {
+    // Redirect or handle unauthenticated access
+    header('Location: auth.php');
+    exit();
+}
+
 $conn = new mysqli("localhost", "root", "", "quickbite");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$cartQuery = "SELECT * FROM cart_items WHERE session_id = ?";
+$cartQuery = "SELECT * FROM cart_items WHERE user_id = ?";
 $stmt = $conn->prepare($cartQuery);
-$stmt->bind_param("s", $session_id);
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -17,21 +32,26 @@ $subtotal = 0;
 $cartHtml = "";
 
 while ($row = $result->fetch_assoc()) {
-    $itemName = tmlspecialchars($row["name"]);
-    $size = htmlspecialchars($row["size"]);
+    $itemName = htmlspecialchars($row["name"]);
+    
+    // Check if the 'size' key exists before using it.
+    // This prevents the "Undefined array key" warning.
+    $size = htmlspecialchars($row["size"] ?? 'N/A');
+    
     $quantity = intval($row["quantity"]);
     $price = floatval($row["price"]);
     $totalItemPrice = $quantity * $price;
     $subtotal += $totalItemPrice;
 
+    $image_path = "../admin/uploads/" . htmlspecialchars($row['item_id']) . "/" . htmlspecialchars($row['image']);
+
     $items .= "{$quantity} x {$itemName}, ";
 
     $cartHtml .= "
         <div class='item'>
-            <img src='images/default.jpg' alt='{$itemName}'>
+            <img src='{$image_path}'>
             <div class='details'>
                 <p><strong>{$itemName}</strong></p>
-                <p>Size: {$size}</p>
                 <p>Price: Rs {$price}</p>
                 <p>Quantity: {$quantity}</p>
             </div>
@@ -73,66 +93,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Place Your Order - QuickBite</title>
-  <link rel="stylesheet" href="order.css" />
+    <meta charset="UTF-8" />
+    <title>Place Your Order - QuickBite</title>
+    <link rel="stylesheet" href="../Homepage/index.css" />
+    <link rel="stylesheet" href="order.css" />
 </head>
 <body>
-  <div class="container">
-    <h1 class="main-heading">Place Your Order</h1>
 
-    <form method="POST" action="order.php" onsubmit="return validateForm()">
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" required />
+<?php require_once 'header/header.php'; ?>
 
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required />
+    <div class="container">
+        <h1 class="main-heading">Place Your Order</h1>
 
-      <label for="address">Address</label>
-      <textarea id="address" name="address" rows="3" required></textarea>
+        <form method="POST" action="order.php" onsubmit="return validateForm()">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required />
 
-      <label for="contact">Contact Number</label>
-      <input type="tel" id="contact" name="contact" required pattern="[0-9]{10}" placeholder="0712345678" />
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
 
-      <!-- Order Summary + Bill Section -->
-      <div class="summary-box">
-        <h2>Your Cart</h2>
-        <?= $cartHtml ?>
+            <label for="address">Address</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
 
-        <label for="order_items">Order Summary</label>
-        <textarea id="order_items" name="order_items" rows="4" readonly><?= $items ?></textarea>
+            <label for="contact">Contact Number</label>
+            <input type="tel" id="contact" name="contact" required pattern="[0-9]{10}" placeholder="0712345678" />
 
-        <div class="bill">
-          <p>Subtotal: Rs <?= $subtotal ?></p>
-          <p>Delivery Fee: Rs <?= $deliveryFee ?></p>
-          <p class="total">Total: Rs <?= $grandTotal ?></p>
-        </div>
+            <div class="summary-box">
+                <h2>Your Cart</h2>
+                <?= $cartHtml ?>
 
-        <input type="hidden" name="total" value="<?= $grandTotal ?>">
-      </div>
+                <label for="order_items">Order Summary</label>
+                <textarea id="order_items" name="order_items" rows="4" readonly><?= $items ?></textarea>
 
-      <button type="submit">Submit Order</button>
-    </form>
-  </div>
+                <div class="bill">
+                    <p>Subtotal: Rs <?= $subtotal ?></p>
+                    <p>Delivery Fee: Rs <?= $deliveryFee ?></p>
+                    <p class="total">Total: Rs <?= $grandTotal ?></p>
+                </div>
 
-  <script>
-    function validateForm() {
-      const email = document.getElementById("email").value.trim();
-      const contact = document.getElementById("contact").value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                <input type="hidden" name="total" value="<?= $grandTotal ?>">
+            </div>
 
-      if (!emailRegex.test(email)) {
-        alert("Please enter a valid email address.");
-        return false;
-      }
+            <button type="submit">Submit Order</button>
+        </form>
+    </div>
 
-      if (!/^\d{10}$/.test(contact)) {
-        alert("Contact number must be 10 digits.");
-        return false;
-      }
+    <script>
+        function validateForm() {
+            const email = document.getElementById("email").value.trim();
+            const contact = document.getElementById("contact").value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      return true;
-    }
-  </script>
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+
+            if (!/^\d{10}$/.test(contact)) {
+                alert("Contact number must be 10 digits.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,73 @@
+/* Essential body padding for a fixed navigation bar */
+body {
+    margin: 0;
+    padding-top: 70px;
+    line-height: 1.6;
+    background: #f9f9f9;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+/* Base navigation bar styles (from your code) */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #ffffff;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    color: rgb(156, 65, 65);
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    align-items: center; 
+}
+
+/* Styles for the new Back and Home buttons */
+.nav-links a {
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #e63946;
+}
+
+.nav-button {
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #f0f0f0;
+}
+
+.back-btn {
+    color: black;
+    border: 1px solid #ccc;
+}
+
+.home-btn {
+    background-color: #ff6b6b;
+    color: white !important;
+    border: none;
+}
+
+.home-btn:hover {
+    background-color: #ff5252;
+}

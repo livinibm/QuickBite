@@ -1,0 +1,357 @@
+/* General Styles */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font-family: 'Poppins', sans-serif; 
+    background: #ffffff; 
+    color: #000000; 
+}
+
+/* Login Page Styles */
+.login-body {
+    min-height: 100vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.login-container { 
+    background: #ffffff; 
+    padding: 2rem; 
+    border-radius: 10px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+    border: 1px solid #ccc; 
+    width: 100%; 
+    max-width: 400px; 
+    transition: all 0.3s ease;
+}
+
+.login-container:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+}
+
+.login-header { 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+
+.login-header h1 { 
+    color: #f00000; 
+    margin-bottom: 0.5rem; 
+}
+
+.login-header p { 
+    color: #333333; 
+}
+
+/* Dashboard Styles */
+.header { 
+    background: #000000; 
+    color: #ffffff; 
+    padding: 1rem 2rem; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.header h1 { 
+    color: #ffffff; 
+}
+
+.logout-btn { 
+    background: #f00000; 
+    color: #ffffff; 
+    padding: 0.6rem 1.5rem; 
+    border: none; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logout-btn:hover { 
+    background: #d00000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.container { 
+    padding: 2rem; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+.stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 1.5rem; 
+    margin-bottom: 2rem; 
+}
+
+.stat-card { 
+    background: #ffffff; 
+    padding: 1.5rem; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+    border: 1px solid #ccc; 
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+}
+
+.stat-card h3 { 
+    color: #333333; 
+    font-size: 0.9rem; 
+    margin-bottom: 0.5rem; 
+}
+
+.stat-card .value { 
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #000000; 
+}
+
+.sections { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 2rem; 
+}
+
+.section { 
+    background: #ffffff; 
+    padding: 1.5rem; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+    border: 1px solid #ccc; 
+    transition: all 0.3s ease;
+}
+
+.section:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.section h2 { 
+    margin-bottom: 1rem; 
+    color: #000000; 
+}
+
+/* Forms & Buttons */
+.form-group { 
+    margin-bottom: 1rem; 
+}
+
+.form-group label { 
+    display: block; 
+    margin-bottom: 0.5rem; 
+    color: #000000; 
+    font-weight: 500;
+}
+
+.form-group input, .form-group textarea, .form-group select { 
+    width: 100%; 
+    padding: 0.75rem; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    font-size: 1rem; 
+    transition: border-color 0.3s; 
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+    outline: none; 
+    border-color: #000000; 
+}
+
+.btn { 
+    padding: 0.75rem; 
+    background: #000000; 
+    color: #ffffff; 
+    border: none; 
+    border-radius: 5px; 
+    font-size: 1rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    width: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn:hover { 
+    background: #333333; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-success {
+    background-color: #f00000;
+}
+
+.btn-success:hover {
+    background-color: #333333;
+}
+
+.btn-danger { 
+    background: #f00000; 
+}
+
+.btn-danger:hover { 
+    background: #d00000; 
+}
+
+/* Table Styles */
+.table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.table th, .table td { 
+    padding: 0.75rem; 
+    text-align: left; 
+    border-bottom: 1px solid #ccc; 
+}
+
+.table th { 
+    background: #f2f2f2; 
+    font-weight: 600; 
+}
+
+/* Alerts */
+.alert { 
+    padding: 1rem; 
+    margin-bottom: 1rem; 
+    border-radius: 5px; 
+    color: #ffffff; 
+}
+
+.alert.success { 
+    background: #000000; 
+}
+
+.alert.error { 
+    background: #f00000; 
+}
+
+/* Modal Styles */
+.modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.7); 
+    z-index: 1000; 
+}
+
+.modal-content { 
+    background: #ffffff; 
+    margin: 5% auto; 
+    padding: 2rem; 
+    padding-bottom: 2.5rem;
+    width: 90%; 
+    max-width: 500px; 
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px; 
+    border: 1px solid #ccc; 
+}
+
+.close { 
+    float: right; 
+    font-size: 1.5rem; 
+    cursor: pointer; 
+    color: #000000; 
+}
+
+/* Action Buttons in Tables */
+.action-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 1rem 0 0 0;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0.25rem;
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #4a5568;
+    background: #ffffff;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+    color: #2d3748;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pagination-btn.active {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.pagination-btn.active:hover {
+    background: #333333;
+    border-color: #333333;
+}
+
+.pagination-dots {
+    color: #a0aec0;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0 0.25rem;
+}
+
+/* Responsive Modal Improvements */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 2% auto;
+        width: 95%;
+        max-height: 90vh;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-height: 600px) {
+    .modal-content {
+        margin: 1% auto;
+        max-height: 95vh;
+    }
+}

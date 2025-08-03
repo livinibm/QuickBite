@@ -1,192 +1,136 @@
-// Sample menu data
-const menuItems = [
-    {
-        id: 1,
-        name: "Margherita Pizza",
-        category: "Pizza",
-        price: 12.99,
-        image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&h=300&fit=crop"
-    },
-    {
-        id: 2,
-        name: "Pepperoni Pizza",
-        category: "Pizza",
-        price: 14.99,
-        image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&h=300&fit=crop"
-    },
-    {
-        id: 3,
-        name: "BBQ Chicken Pizza",
-        category: "Pizza",
-        price: 16.99,
-        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop"
-    },
-    {
-        id: 4,
-        name: "Classic Burger",
-        category: "Burgers",
-        price: 9.99,
-        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop"
-    },
-    {
-        id: 5,
-        name: "Cheese Burger",
-        category: "Burgers",
-        price: 11.99,
-        image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=300&fit=crop"
-    },
-    {
-        id: 6,
-        name: "Bacon Burger",
-        category: "Burgers",
-        price: 13.99,
-        image: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&h=300&fit=crop"
-    },
-    {
-        id: 7,
-        name: "Chicken Caesar Salad",
-        category: "Salads",
-        price: 8.99,
-        image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop"
-    },
-    {
-        id: 8,
-        name: "Greek Salad",
-        category: "Salads",
-        price: 7.99,
-        image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
-    },
-    {
-        id: 9,
-        name: "Garden Salad",
-        category: "Salads",
-        price: 6.99,
-        image: "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&h=300&fit=crop"
-    },
-    {
-        id: 10,
-        name: "Chicken Wings",
-        category: "Appetizers",
-        price: 8.99,
-        image: "https://images.unsplash.com/photo-1567620832904-9d64bcd6c381?w=400&h=300&fit=crop"
-    },
-    {
-        id: 11,
-        name: "Mozzarella Sticks",
-        category: "Appetizers",
-        price: 6.99,
-        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop"
-    },
-    {
-        id: 12,
-        name: "French Fries",
-        category: "Appetizers",
-        price: 4.99,
-        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop"
-    },
-    {
-        id: 13,
-        name: "Chocolate Cake",
-        category: "Desserts",
-        price: 5.99,
-        image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop"
-    },
-    {
-        id: 14,
-        name: "Ice Cream Sundae",
-        category: "Desserts",
-        price: 4.99,
-        image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
-    },
-    {
-        id: 15,
-        name: "Apple Pie",
-        category: "Desserts",
-        price: 6.99,
-        image: "https://images.unsplash.com/photo-1535920527002-b35e3f412d4f?w=400&h=300&fit=crop"
-    },
-    {
-        id: 16,
-        name: "Coca Cola",
-        category: "Beverages",
-        price: 2.99,
-        image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=400&h=300&fit=crop"
-    },
-    {
-        id: 17,
-        name: "Orange Juice",
-        category: "Beverages",
-        price: 3.99,
-        image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=300&fit=crop"
-    },
-    {
-        id: 18,
-        name: "Coffee",
-        category: "Beverages",
-        price: 2.49,
-        image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop"
-    }
-];
+document.addEventListener('DOMContentLoaded', () => {
+    fetchMenuItems();
 
-// Cart functionality
-let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    // Event listener for "Add to Cart" and quantity buttons
+    document.body.addEventListener('click', (e) => {
+        // Handle "Add to Cart" button clicks
+        if (e.target.classList.contains('add-to-cart-btn')) {
+            handleAddToCart(e.target);
+        }
 
-function updateCartCount() {
-    const totalItems = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
-    document.getElementById('cartCount').textContent = totalItems;
-}
-
-function addToCart(itemId, quantity) {
-    if (cart[itemId]) {
-        cart[itemId] += quantity;
-    } else {
-        cart[itemId] = quantity;
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    alert('Item added to cart!');
-}
+        // Handle quantity button clicks
+        if (e.target.classList.contains('quantity-btn')) {
+            handleQuantityChange(e.target);
+        }
+    });
+});
 
 function filterMenu() {
-    const selectedCategory = document.getElementById('categoryFilter').value;
-    const filteredItems = selectedCategory === 'all' 
-        ? menuItems 
-        : menuItems.filter(item => item.category === selectedCategory);
-    
-    displayMenuItems(filteredItems);
+    fetchMenuItems();
 }
 
-function displayMenuItems(items) {
+async function fetchMenuItems() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    const category = categoryFilter.value;
     const menuGrid = document.getElementById('menuGrid');
-    menuGrid.innerHTML = '';
+    const loader = document.getElementById('loader');
 
-    if (items.length === 0) {
-        menuGrid.innerHTML = '<p>No menu items found.</p>';
+    menuGrid.innerHTML = '';
+    loader.style.display = 'block';
+
+    try {
+        const response = await fetch(`get_menu_items.php?category=${category}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const items = await response.json();
+
+        if (items.error) {
+            menuGrid.innerHTML = `<p class="error">${items.error}</p>`;
+            return;
+        }
+
+        if (items.length === 0) {
+            menuGrid.innerHTML = '<p class="no-items">No items found in this category.</p>';
+            return;
+        }
+
+        items.forEach(item => {
+            // --- UPDATED HTML TEMPLATE STRING ---
+            const menuItemHtml = `
+                <div class="menu-item">
+                    <img src="${item.image}" alt="${item.name}" />
+                    <div class="menu-item-content">
+                        <h3>${item.name}</h3>
+                        <p class="category">${item.category}</p>
+                        <p class="price">Rs. ${parseFloat(item.price).toFixed(2)}</p>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus-btn">-</button>
+                                <span class="quantity-value">1</span>
+                                <button class="quantity-btn plus-btn">+</button>
+                            </div>
+                            <button class="add-to-cart-btn" data-id="${item.id}">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            // --- END OF UPDATED SECTION ---
+            menuGrid.innerHTML += menuItemHtml;
+        });
+
+    } catch (e) {
+        console.error("Failed to fetch menu items:", e);
+        menuGrid.innerHTML = '<p class="error">Failed to load menu items. Please try again later.</p>';
+    } finally {
+        loader.style.display = 'none';
+    }
+}
+
+// New function to handle the quantity changes
+function handleQuantityChange(button) {
+    const quantityControl = button.closest('.quantity-control');
+    const quantitySpan = quantityControl.querySelector('.quantity-value');
+    let quantity = parseInt(quantitySpan.textContent, 10);
+
+    if (button.classList.contains('plus-btn')) {
+        quantity++;
+    } else if (button.classList.contains('minus-btn')) {
+        if (quantity > 1) { // Prevent quantity from going below 1
+            quantity--;
+        }
+    }
+    quantitySpan.textContent = quantity;
+}
+
+async function handleAddToCart(button) {
+    const itemId = button.getAttribute('data-id');
+    // --- UPDATED QUANTITY RETRIEVAL ---
+    const quantityControl = button.parentNode.querySelector('.quantity-control');
+    const quantitySpan = quantityControl.querySelector('.quantity-value');
+    const quantity = parseInt(quantitySpan.textContent, 10);
+    // --- END OF UPDATED SECTION ---
+
+    if (quantity < 1) {
+        alert("Quantity must be at least 1.");
         return;
     }
 
-    items.forEach(item => {
-        const menuItem = document.createElement('div');
-        menuItem.className = 'menu-item';
-        menuItem.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <div class="menu-item-content">
-                <h3>${item.name}</h3>
-                <div class="price">$${item.price.toFixed(2)}</div>
-                <div class="add-to-cart">
-                    <input type="number" value="1" min="1" id="qty-${item.id}">
-                    <button onclick="addToCart(${item.id}, parseInt(document.getElementById('qty-${item.id}').value))">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-        `;
-        menuGrid.appendChild(menuItem);
-    });
+    try {
+        const response = await fetch('add_to_cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ item_id: itemId, quantity: quantity }),
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            alert("Item added to cart successfully!");
+        } else {
+            alert("Error adding item to cart: " + result.error);
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
+    }
 }
 
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    displayMenuItems(menuItems);
-    updateCartCount();
-}); 
+function confirmLogout() {
+    if (confirm("Are you sure you want to log out?")) {
+        window.location.href = 'logout.php';
+    }
+}

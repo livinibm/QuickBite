@@ -1,0 +1,206 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #eecbcb;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* Main layout using flexbox to position content */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    min-height: 100vh;
+    padding: 0 10%;
+}
+
+/* CSS to create the grey blurred overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(83, 75, 76, 0.2); 
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+/* Styles for the text on the left */
+.left-content {
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transform: translateY(-20px);
+}
+
+.left-content h1 {
+    font-size: 6em;
+    margin-bottom: 15px;
+    color: #f0f0f0;
+    text-shadow: 
+        2px 2px 0 #d92b3f,
+        4px 4px 0 #b31f31,
+        6px 6px 0 #8c1626,
+        8px 8px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease-in-out;
+}
+
+.left-content h1:hover {
+    transform: scale(1.05); 
+}
+
+.left-content p {
+    font-size: 1.6em;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: #f0f0f0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Container for the login/register form */
+.auth-container {
+    width: 450px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tab-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.tab-buttons button.active {
+    background: #d92b3f;
+    color: white;
+}
+
+.form-container {
+    position: relative;
+}
+
+/* Base style for all form types */
+.form {
+    display: none;
+    flex-direction: column;
+}
+
+/* Active state to show a form */
+.form.active {
+    display: flex;
+}
+
+.form h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.form input {
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5-px;
+    border: 1px solid #ccc;
+}
+
+.form button {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #d92b3f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Styling for the new links and form description */
+.forgot-link, .back-link {
+    font-size: 0.9em;
+    color: #d92b3f;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.forgot-link:hover, .back-link:hover {
+    color: #b31f31;
+    text-decoration: underline;
+}
+
+.form-description {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 0.9em;
+}
+
+/* Message boxes */
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    animation: fadeIn 0.5s ease-in-out;
+    width: 350px;
+    max-width: 90%;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1em;
+    width: 350px;
+    max-width: 90%;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

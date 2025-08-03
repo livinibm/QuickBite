@@ -4,16 +4,12 @@
     box-sizing: border-box;
 }
 
-
-
-/* Add top padding to the body to prevent content from hiding under navbar */
 body {
     margin: 0;
     padding-top: 70px;
     line-height: 1.6;
     background: #f9f9f9;
     color: #333;
-    /* Adjust based on navbar height */
     font-family: Arial, sans-serif;
 }
 
@@ -22,7 +18,6 @@ body {
     top: 0;
     width: 100%;
     background-color: #ffffff;
-    /* Or any color you prefer */
     z-index: 999;
     display: flex;
     justify-content: space-between;
@@ -30,10 +25,6 @@ body {
     padding: 10px 40px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
-
-
-
 
 .logo {
     font-size: 1.5rem;
@@ -45,8 +36,7 @@ body {
     list-style: none;
     display: flex;
     gap: 20px;
-
-
+    align-items: center; 
 }
 
 .nav-links a {
@@ -59,33 +49,38 @@ body {
     color: #e63946;
 }
 
+.logout-btn {
+    background-color: #e63946;
+    color: white !important;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    background-color: #d92b3f;
+}
+
 .main-content {
     padding: 10px 40px;
     background-color: #fff;
     text-align: center;
 }
 
-
-/* index.css */
-
 .banner {
-    /* Use the correct path to your image here */
-    background-image: url('C:\xampp\htdocs\food_delivery\Assets\restuarent.jpeg');
+    background-image: url('assests/background.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
-    /* Needed for the absolute positioning of the overlay */
     min-height: 80vh;
-    /* Make the banner take up the full viewport height */
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: white;
-    /* Make the text white for better contrast */
 }
 
-/* This creates a dark overlay on top of the background image */
 .banner::before {
     content: '';
     position: absolute;
@@ -94,14 +89,12 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Black with 50% opacity */
     z-index: 1;
 }
 
 .hero {
     position: relative;
     z-index: 2;
-    /* Ensures the text is on top of the overlay */
 }
 
 .hero h1 {
@@ -113,7 +106,6 @@ body {
     font-size: 1.25rem;
     margin-bottom: 2rem;
 }
-
 
 .dishes {
     padding: 50px 30px;
@@ -135,6 +127,7 @@ body {
     border-radius: 10px;
     width: 250px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .dish img {
@@ -156,23 +149,72 @@ body {
     padding: 0 1rem;
 }
 
+/* Updated Category Filter Styles */
 .category-filter {
     margin-bottom: 2rem;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
 }
 
-.category-filter select,
-.category-filter button {
-    padding: 0.5rem;
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.category-filter select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #f0f0f0;
+    color: #4a4a4a;
+    border: 1px solid #ddd;
+    padding: 10px 40px 10px 15px; /* Added extra padding for the arrow */
+    border-radius: 25px;
     font-size: 1rem;
-    color: #fff;
-    background-color: #007bff;
-    /* Use a primary blue color */
-    border-color: #007bff;
-    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    min-width: 200px;
 }
 
+.category-filter select:hover {
+    background-color: #e0e0e0;
+    border-color: #c0c0c0;
+}
 
+.select-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #e63946; /* The arrow color */
+    transform: translateY(-50%);
+}
+
+.category-filter button {
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.category-filter button:hover {
+    background-color: #d62d3a;
+}
+/* End of Category Filter Styles */
 
 .menu-grid {
     display: grid;
@@ -209,36 +251,67 @@ body {
 
 .menu-item .price {
     font-weight: bold;
-    color: #ff6b6b;
+    color: #e63946;
     font-size: 1.2rem;
     margin-bottom: 1rem;
 }
 
-.menu-item .add-to-cart {
+.add-to-cart-controls {
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
 }
 
-.menu-item input[type="number"] {
-    width: 60px;
-    padding: 0.5rem;
-    margin-right: 0.5rem;
+.quantity-control {
+    display: flex;
+    align-items: center;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-.menu-item button {
-    background-color: #ff6b6b;
+.quantity-btn {
+    background-color: #fff;
+    color: #e63946;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.quantity-btn:hover {
+    background-color: #e63946;
+    color: white;
+}
+
+.quantity-value {
+    padding: 0 15px;
+    font-size: 1rem;
+    color: #333;
+    min-width: 30px;
+    text-align: center;
+}
+
+.add-to-cart-btn {
+    background-color: #e63946;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-.menu-item button:hover {
-    background-color: #ff5252;
+.add-to-cart-btn:hover {
+    background-color: #d62d3a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
 }
 
 .cart-link {
@@ -249,7 +322,7 @@ body {
     position: absolute;
     top: -8px;
     right: -8px;
-    background-color: #ff6b6b;
+    background-color: #e63946;
     color: white;
     border-radius: 50%;
     width: 20px;
@@ -267,7 +340,7 @@ body {
 .about,
 .contact {
     padding: 60px 20px;
-    background: rgb(168, 92, 239);
+    background: #f1f1f1;
     text-align: center;
 }
 
