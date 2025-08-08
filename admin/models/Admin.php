@@ -33,7 +33,8 @@ class Admin {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if($row && password_verify($password, $row['password'])) {
-            $_SESSION['admin_id'] = $row['user_id'];
+            $_SESSION['user_id'] = $row['user_id'];
+            $_SESSION['user_role'] = 'admin';
             $_SESSION['admin_username'] = $row['full_name'];
             $_SESSION['admin_email'] = $row['email'];
             return true;
@@ -46,14 +47,15 @@ class Admin {
      * @return bool
      */
     public function isLoggedIn() {
-        return isset($_SESSION['admin_id']);
+        return isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'admin';
     }
 
     /**
      * Logout admin
      */
     public function logout() {
-        unset($_SESSION['admin_id']);
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_role']);
         unset($_SESSION['admin_username']);
         unset($_SESSION['admin_email']);
         session_destroy();
@@ -263,13 +265,14 @@ class Admin {
             $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
             
             // Insert user with default customer role
-            $query = "INSERT INTO " . $this->table_users . " (full_name, email, contact_number, address, password, user_role) VALUES (?, ?, ?, ?, ?, 'customer')";
+            $query = "INSERT INTO " . $this->table_users . " (full_name, email, contact_number, nic, address, password, user_role) VALUES (?, ?, ?, ?, ?, ?, 'customer')";
             $stmt = $this->conn->prepare($query);
             
             return $stmt->execute([
                 $data['name'],
                 $data['email'],
                 $data['phone'],
+                $data['nic'],
                 $data['address'],
                 $hashedPassword
             ]);
@@ -310,6 +313,9 @@ class Admin {
             
             $fields[] = "contact_number = ?";
             $values[] = $data['phone'];
+            
+            $fields[] = "nic = ?";
+            $values[] = $data['nic'];
             
             $fields[] = "address = ?";
             $values[] = $data['address'];

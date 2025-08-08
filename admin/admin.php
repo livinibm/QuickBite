@@ -2,8 +2,8 @@
 session_start();
 require_once 'models/Admin.php';
 
-if (!isset($_SESSION['user_id'])) {
-    // If the user is not logged in, redirect them to the login page.
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    // If the user is not logged in or not an admin, redirect them to the login page.
     header('Location: ../reglogin/auth.php');
     exit();
 }
@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'name' => $_POST['name'],
                     'email' => $_POST['email'],
                     'phone' => $_POST['phone'],
+                    'nic' => $_POST['nic'],
                     'password' => $_POST['password'],
                     'address' => $_POST['address']
                 ];
@@ -118,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'name' => $_POST['name'],
                     'email' => $_POST['email'],
                     'phone' => $_POST['phone'],
+                    'nic' => $_POST['nic'],
                     'address' => $_POST['address']
                 ];
                 
@@ -253,8 +255,10 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                 <table class="table" style="margin-top: 1rem;">
                     <thead>
                         <tr>
+                            <th>User ID</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>NIC</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -262,8 +266,10 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <?php if ($users && count($users) > 0): ?>
                             <?php foreach ($users as $user): ?>
                             <tr>
+                                <td><?php echo htmlspecialchars($user['user_id'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($user['full_name'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($user['email'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($user['nic'] ?? 'N/A'); ?></td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn action-btn" onclick="editUser(<?php echo $user['user_id']; ?>)">Edit</button>
@@ -274,7 +280,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="3" style="text-align: center; color: #666;">No users found</td>
+                                <td colspan="5" style="text-align: center; color: #666;">No users found</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -437,6 +443,10 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
             <form method="POST">
                 <input type="hidden" name="action" value="add_user">
                 <div class="form-group">
+                    <label for="userIdDisplay">User ID</label>
+                    <input type="text" id="userIdDisplay" value="Auto-generated" readonly style="background-color: #f5f5f5;">
+                </div>
+                <div class="form-group">
                     <label for="userName">Name</label>
                     <input type="text" id="userName" name="name" required>
                 </div>
@@ -447,6 +457,10 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                 <div class="form-group">
                     <label for="userPhone">Phone</label>
                     <input type="tel" id="userPhone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="userNic">NIC</label>
+                    <input type="text" id="userNic" name="nic" required placeholder="Enter NIC (9 digits + V/X or 12 digits)">
                 </div>
                 <div class="form-group">
                     <label for="userPassword">Password</label>
@@ -479,6 +493,10 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                 <div class="form-group">
                     <label for="editUserPhone">Phone</label>
                     <input type="tel" id="editUserPhone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="editUserNic">NIC</label>
+                    <input type="text" id="editUserNic" name="nic" required placeholder="Enter NIC (9 digits + V/X or 12 digits)">
                 </div>
                 <div class="form-group">
                     <label for="editUserPassword">Password (leave blank to keep current)</label>
@@ -521,6 +539,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         document.getElementById('editUserName').value = data.full_name || '';
                         document.getElementById('editUserEmail').value = data.email || '';
                         document.getElementById('editUserPhone').value = data.contact_number || '';
+                        document.getElementById('editUserNic').value = data.nic || '';
                         document.getElementById('editUserPassword').value = ''; // Clear password field
                         document.getElementById('editUserAddress').value = data.address || '';
                         openModal('editUserModal');
@@ -562,6 +581,38 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                 setTimeout(() => alert.style.display = 'none', 500);
             });
         }, 5000);
+
+        // NIC validation function
+        function validateNIC(nic) {
+            // Sri Lankan NIC formats:
+            // Old format: 9 digits + V/v/X/x
+            // New format: 12 digits
+            const oldNICPattern = /^[0-9]{9}[vVxX]$/;
+            const newNICPattern = /^[0-9]{12}$/;
+            
+            return oldNICPattern.test(nic) || newNICPattern.test(nic);
+        }
+
+        // Add event listeners for NIC validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const nicFields = ['userNic', 'editUserNic'];
+            
+            nicFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('blur', function() {
+                        const nic = this.value.trim();
+                        if (nic && !validateNIC(nic)) {
+                            this.style.borderColor = '#ff4444';
+                            this.title = 'Invalid NIC format. Use 9 digits + V/X or 12 digits';
+                        } else {
+                            this.style.borderColor = '';
+                            this.title = '';
+                        }
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
