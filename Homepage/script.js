@@ -134,3 +134,45 @@ function confirmLogout() {
         window.location.href = 'logout.php';
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Other functions and listeners for things like 'fetchMenuItems' and
+    // 'add-to-cart' buttons would go here.
+
+    const contactForm = document.getElementById('contactForm');
+    const formMessage = document.getElementById('form-message');
+
+    // Make sure the form exists before adding the event listener.
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevents the form from reloading the page
+
+            const formData = new FormData(this); // Gathers data from the form
+            
+            try {
+                // The fetch request sends the form data to submit_contact.php
+                const response = await fetch('submit_contact.php', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                // Parses the JSON response from the PHP script
+                const result = await response.json(); 
+
+                if (result.success) {
+                    formMessage.textContent = result.message;
+                    formMessage.style.color = 'green';
+                    this.reset(); // Clears the form fields on success
+                } else {
+                    formMessage.textContent = result.message;
+                    formMessage.style.color = 'red';
+                }
+            } catch (error) {
+                // This catches network errors or issues with the server response
+                formMessage.textContent = 'An error occurred. Please try again.';
+                formMessage.style.color = 'red';
+                console.error('Error:', error);
+            }
+        });
+    }
+});

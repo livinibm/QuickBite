@@ -122,13 +122,15 @@ if (!isset($_SESSION['user_id'])) {
     </section>
 
     <section class="contact" id="contact">
-        <h2>Contact Us</h2>
-        <form>
-            <input type="text" placeholder="Your Name" required />
-            <input type="email" placeholder="Your Email" required />
-            <textarea rows="4" placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
+        <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea rows="4" name="message" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+    <p id="form-message" style="text-align: center; margin-top: 1rem;"></p>
     </section>
 
     <footer>
