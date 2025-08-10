@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 $db_host = 'localhost';
 $db_user = 'root';
 $db_pass = '';
-$db_name = 'quickbite'; // CHANGE THIS TO YOUR ACTUAL DATABASE NAME
+$db_name = 'quickbite';
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
