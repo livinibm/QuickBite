@@ -1,8 +1,4 @@
 <?php
-/**
- * Database Configuration for QuickBite Application
- * This file contains database connection settings and connection class
- */
 
 class Database {
     private $host = "localhost";
@@ -11,10 +7,6 @@ class Database {
     private $password = "";
     public $conn;
 
-    /**
-     * Get database connection
-     * @return PDO|null
-     */
     public function getConnection() {
         $this->conn = null;
         

@@ -1,14 +1,14 @@
 <?php
 session_start();
-require_once 'models/Admin.php';
+require_once 'class/Admin.php';
 
+// Check if user is logged in and is an admin
+// If not, send them to login page
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    // If the user is not logged in or not an admin, redirect them to the login page.
     header('Location: ../reglogin/auth.php');
     exit();
 }
 
-// Helper function for image upload
 function handleImageUpload($file, $itemId) {
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
         return false;
@@ -16,7 +16,6 @@ function handleImageUpload($file, $itemId) {
 
     $uploadDir = "uploads/" . htmlspecialchars($itemId) . "/";
 
-    // Create upload directory if it doesn't exist
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
@@ -24,14 +23,15 @@ function handleImageUpload($file, $itemId) {
     $imageFileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
+    // Checking allowed file types 
     if (!in_array($imageFileType, $allowedTypes)) {
         return false;
     }
 
-    // Generate unique filename
     $fileName = 'menu_' . time() . '_' . rand(1000, 9999) . '.' . $imageFileType;
     $targetFile = $uploadDir . $fileName;
 
+    // Move uploaded file to folder
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         return $fileName;
     }
@@ -39,7 +39,6 @@ function handleImageUpload($file, $itemId) {
     return false;
 }
 
-// Helper function to set flash message
 function setFlashMessage($message, $type) {
     $_SESSION['flash_message'] = $message;
     $_SESSION['flash_type'] = $type;
@@ -47,36 +46,35 @@ function setFlashMessage($message, $type) {
 
 $admin = new Admin();
 
-// Handle flash messages from session
 $message = $_SESSION['flash_message'] ?? '';
 $messageType = $_SESSION['flash_type'] ?? '';
 
-// Clear flash messages after reading
 if (isset($_SESSION['flash_message'])) {
     unset($_SESSION['flash_message']);
     unset($_SESSION['flash_type']);
 }
 
-// Handle AJAX requests for get_user specifically
+// Handle AJAX request to get user data for editing
 if (($_GET['action'] ?? '') === 'get_user') {
     header('Content-Type: application/json');
     
-    // Check if the user is logged in
-    // Note: You would need to add your authentication logic here
+    // Check if admin is logged in
     if (!$admin->isLoggedIn()) {
         echo json_encode(['error' => 'Not authenticated']);
         exit;
     }
     
+    // Get user ID from URL
     $id = $_GET['id'] ?? null;
     if (!$id) {
         echo json_encode(['error' => 'User ID is required']);
         exit;
     }
     
+    // Get user data from database
     $user = $admin->getUserById($id);
     if ($user) {
-        // Remove sensitive data before sending
+        // Remove password from data for security
         unset($user['password']);
         echo json_encode($user);
     } else {
@@ -85,18 +83,19 @@ if (($_GET['action'] ?? '') === 'get_user') {
     exit;
 }
 
-// Handle logout
+// Handle logout request
 if (($_GET['action'] ?? '') === 'logout') {
     $admin->logout();
-    // Assuming 'login.php' is your login page
+    
     header('Location: ../reglogin/auth.php');
     exit;
 }
 
-// Main logic for handling form submissions
+// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
+
             case 'add_user':
                 $userData = [
                     'name' => $_POST['name'],
@@ -114,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: admin.php');
                 exit;
                 break;
+
             case 'update_user':
                 $userData = [
                     'name' => $_POST['name'],
@@ -122,8 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'nic' => $_POST['nic'],
                     'address' => $_POST['address']
                 ];
-                
-                // Only update password if provided
+                // Only update password if admin entered a new one
                 if (!empty($_POST['password'])) {
                     $userData['password'] = $_POST['password'];
                 }
@@ -136,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: admin.php');
                 exit;
                 break;
+                
             case 'delete_user':
                 if ($admin->deleteUser($_POST['id'])) {
                     setFlashMessage('User deleted successfully!', 'success');
@@ -145,34 +145,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: admin.php');
                 exit;
                 break;
+
             case 'add_menu':
                 if (isset($_POST['name'], $_POST['category'], $_POST['price'])) {
                     $menuData = [
                         'name' => $_POST['name'],
                         'category' => $_POST['category'],
                         'price' => $_POST['price'],
-                        'image' => null, // Placeholder for the image
+                        'image' => null,
                         'popularity' => 0
                     ];
 
-                    // Attempt to add the menu item first to get the ID
                     $itemId = $admin->addMenuItem($menuData);
                     
                     if ($itemId !== false) {
-                        // If item was added successfully, handle the image upload
+                        
+                        // Handle image if uploaded
                         if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
                             $uploadedImage = handleImageUpload($_FILES['image'], $itemId);
                             if ($uploadedImage !== false) {
-                                // Update the menu item with the new image filename
+                                
                                 $admin->updateMenuImage($itemId, $uploadedImage);
                             } else {
-                                // Image upload failed, but item was added. Set an error message.
+                                
                                 setFlashMessage('Menu item added, but image upload failed. Only JPG, JPEG, PNG & GIF files are allowed.', 'error');
                                 header('Location: admin.php');
                                 exit;
                             }
                         }
-                        // If image was not uploaded, the placeholder `null` will remain, which is fine.
+                        
 
                         setFlashMessage('Menu item added successfully!', 'success');
                     } else {
@@ -186,27 +187,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get statistics
+// Get numbers for dashboard statistics
 $totalOrders = $admin->getTotalOrders();
 $totalMenuItems = $admin->getTotalMenuItems();
 $totalRevenue = $admin->getTotalRevenue();
 
-// Pagination parameters
 $usersPage = $_GET['users_page'] ?? 1;
 $ordersPage = $_GET['orders_page'] ?? 1;
 $usersPerPage = 5;
 $ordersPerPage = 10;
 
-// Get paginated data
 $users = $admin->getUsersPaginated($usersPage, $usersPerPage);
 $orders = $admin->getOrdersPaginated($ordersPage, $ordersPerPage);
 $totalUsers = $admin->getTotalUsers();
 $totalOrdersCount = $admin->getTotalOrders();
 
-// Calculate if there are more pages
 $hasMoreUsers = ($usersPage * $usersPerPage) < $totalUsers;
 $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -214,7 +213,8 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickBite Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/admin.css?v=<?php echo time(); ?>">
+    <!-- Admin stylesheet with timestamp to prevent caching -->
+    <link rel="stylesheet" href="css/admin.css?v=<?php echo time(); ?>">
 </head>
 <body>
     <div class="header">
@@ -229,6 +229,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
             </div>
         <?php endif; ?>
 
+        <!-- Dashboard statistics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Total Orders</h3>
@@ -248,6 +249,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
             </div>
         </div>
 
+        <!-- User Management and Orders section -->
         <div class="sections">
             <div class="section">
                 <h2>User Management</h2>
@@ -285,22 +287,18 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <?php endif; ?>
                     </tbody>
                 </table>
-                
                 <div class="pagination">
                     <?php
                     $totalUsersPages = ceil($totalUsers / $usersPerPage);
                     $ordersPageParam = isset($_GET['orders_page']) ? '&orders_page=' . $_GET['orders_page'] : '';
                     
-                    // Previous button
                     if ($usersPage > 1): ?>
                         <a href="?users_page=<?php echo $usersPage - 1; ?><?php echo $ordersPageParam; ?>" class="pagination-btn">‹</a>
                     <?php endif;
                     
-                    // Page numbers
                     $start = max(1, $usersPage - 2);
                     $end = min($totalUsersPages, $usersPage + 2);
                     
-                    // Show first page if we're not starting from 1
                     if ($start > 1): ?>
                         <a href="?users_page=1<?php echo $ordersPageParam; ?>" class="pagination-btn">1</a>
                         <?php if ($start > 2): ?>
@@ -308,13 +306,11 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <?php endif;
                     endif;
                     
-                    // Show page numbers
                     for ($i = $start; $i <= $end; $i++): ?>
                         <a href="?users_page=<?php echo $i; ?><?php echo $ordersPageParam; ?>" 
                            class="pagination-btn <?php echo $i == $usersPage ? 'active' : ''; ?>"><?php echo $i; ?></a>
                     <?php endfor;
                     
-                    // Show last page if we're not ending at the last page
                     if ($end < $totalUsersPages): ?>
                         <?php if ($end < $totalUsersPages - 1): ?>
                             <span class="pagination-dots">...</span>
@@ -322,13 +318,13 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <a href="?users_page=<?php echo $totalUsersPages; ?><?php echo $ordersPageParam; ?>" class="pagination-btn"><?php echo $totalUsersPages; ?></a>
                     <?php endif;
                     
-                    // Next button
                     if ($usersPage < $totalUsersPages): ?>
                         <a href="?users_page=<?php echo $usersPage + 1; ?><?php echo $ordersPageParam; ?>" class="pagination-btn">›</a>
                     <?php endif; ?>
                 </div>
             </div>
 
+            <!-- Orders Section -->
             <div class="section">
                 <h2>Orders</h2>
                 <table class="table">
@@ -357,22 +353,18 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <?php endif; ?>
                     </tbody>
                 </table>
-                
                 <div class="pagination">
                     <?php
                     $totalOrdersPages = ceil($totalOrdersCount / $ordersPerPage);
                     $usersPageParam = isset($_GET['users_page']) ? '&users_page=' . $_GET['users_page'] : '';
                     
-                    // Previous button
                     if ($ordersPage > 1): ?>
                         <a href="?orders_page=<?php echo $ordersPage - 1; ?><?php echo $usersPageParam; ?>" class="pagination-btn">‹</a>
                     <?php endif;
                     
-                    // Page numbers
                     $start = max(1, $ordersPage - 2);
                     $end = min($totalOrdersPages, $ordersPage + 2);
                     
-                    // Show first page if we're not starting from 1
                     if ($start > 1): ?>
                         <a href="?orders_page=1<?php echo $usersPageParam; ?>" class="pagination-btn">1</a>
                         <?php if ($start > 2): ?>
@@ -380,13 +372,11 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <?php endif;
                     endif;
                     
-                    // Show page numbers
                     for ($i = $start; $i <= $end; $i++): ?>
                         <a href="?orders_page=<?php echo $i; ?><?php echo $usersPageParam; ?>" 
                            class="pagination-btn <?php echo $i == $ordersPage ? 'active' : ''; ?>"><?php echo $i; ?></a>
                     <?php endfor;
                     
-                    // Show last page if we're not ending at the last page
                     if ($end < $totalOrdersPages): ?>
                         <?php if ($end < $totalOrdersPages - 1): ?>
                             <span class="pagination-dots">...</span>
@@ -394,7 +384,6 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         <a href="?orders_page=<?php echo $totalOrdersPages; ?><?php echo $usersPageParam; ?>" class="pagination-btn"><?php echo $totalOrdersPages; ?></a>
                     <?php endif;
                     
-                    // Next button
                     if ($ordersPage < $totalOrdersPages): ?>
                         <a href="?orders_page=<?php echo $ordersPage + 1; ?><?php echo $usersPageParam; ?>" class="pagination-btn">›</a>
                     <?php endif; ?>
@@ -402,6 +391,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
             </div>
         </div>
 
+        <!-- Adding new menu items Section -->
         <div class="section" style="margin-top: 2rem;">
             <h2>Add Menu Item</h2>
             <form method="POST" enctype="multipart/form-data">
@@ -436,16 +426,15 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
         </div>
     </div>
 
+    <!-- Popup window for adding new users -->
     <div id="addUserModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('addUserModal')">&times;</span>
+            
             <h2>Add User</h2>
+
             <form method="POST">
                 <input type="hidden" name="action" value="add_user">
-                <div class="form-group">
-                    <label for="userIdDisplay">User ID</label>
-                    <input type="text" id="userIdDisplay" value="Auto-generated" readonly style="background-color: #f5f5f5;">
-                </div>
                 <div class="form-group">
                     <label for="userName">Name</label>
                     <input type="text" id="userName" name="name" required>
@@ -475,6 +464,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
         </div>
     </div>
 
+    <!-- Popup window for editing users -->
     <div id="editUserModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('editUserModal')">&times;</span>
@@ -512,10 +502,12 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
     </div>
 
     <script>
+        // Function to show popup windows
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
         }
 
+        // Function to hide popup windows
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
@@ -534,6 +526,7 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                         return;
                     }
                     
+                    // Fill the edit form with user data
                     if (data && data.user_id) {
                         document.getElementById('editUserId').value = data.user_id;
                         document.getElementById('editUserName').value = data.full_name || '';
@@ -603,9 +596,11 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
                     field.addEventListener('blur', function() {
                         const nic = this.value.trim();
                         if (nic && !validateNIC(nic)) {
+                            // Show red border if invalid
                             this.style.borderColor = '#ff4444';
                             this.title = 'Invalid NIC format. Use 9 digits + V/X or 12 digits';
                         } else {
+                            // Remove red border if valid
                             this.style.borderColor = '';
                             this.title = '';
                         }

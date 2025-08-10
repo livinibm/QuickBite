@@ -1,10 +1,6 @@
 <?php
-/**
- * Admin Model Class
- * Handles admin authentication and CRUD operations for menu items and orders
- */
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../dbconnection/database.php';
 
 class Admin {
     private $conn;
@@ -18,12 +14,7 @@ class Admin {
         $this->conn = $database->getConnection();
     }
 
-    /**
-     * Authenticate admin login
-     * @param string $username (email)
-     * @param string $password
-     * @return bool
-     */
+    /* Authenticate admin login */
     public function login($username, $password) {
         $query = "SELECT user_id, full_name, email, password FROM " . $this->table_users . " WHERE email = ? AND user_role = 'admin' LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -42,17 +33,11 @@ class Admin {
         return false;
     }
 
-    /**
-     * Check if admin is logged in
-     * @return bool
-     */
     public function isLoggedIn() {
         return isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'admin';
     }
 
-    /**
-     * Logout admin
-     */
+    /* Admin logout */
     public function logout() {
         unset($_SESSION['user_id']);
         unset($_SESSION['user_role']);
@@ -61,10 +46,7 @@ class Admin {
         session_destroy();
     }
 
-    /**
-     * Get all orders
-     * @return array
-     */
+    /* Get all orders */
     public function getAllOrders() {
         $query = "SELECT * FROM " . $this->table_orders . " ORDER BY order_date DESC";
         $stmt = $this->conn->prepare($query);
@@ -72,10 +54,7 @@ class Admin {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get all menu items
-     * @return array
-     */
+    /* Get all menu items */
     public function getAllMenuItems() {
         $query = "SELECT * FROM " . $this->table_menu . " ORDER BY id DESC";
         $stmt = $this->conn->prepare($query);
@@ -83,11 +62,7 @@ class Admin {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get menu item by ID
-     * @param int $id
-     * @return array
-     */
+    /* Get menu item by ID */
     public function getMenuItemById($id) {
         $query = "SELECT * FROM " . $this->table_menu . " WHERE id = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -96,11 +71,7 @@ class Admin {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Add new menu item
-     * @param array $data
-     * @return int|false Returns the ID of the new item on success, false on failure.
-     */
+    /* Add new menu item */
     public function addMenuItem($data) {
         $query = "INSERT INTO " . $this->table_menu . " (name, category, price, image, popularity) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
@@ -120,12 +91,7 @@ class Admin {
         return false;
     }
 
-    /**
-     * Update menu item
-     * @param int $id
-     * @param array $data
-     * @return bool
-     */
+    /* Update menu item */
     public function updateMenuItem($id, $data) {
         $query = "UPDATE " . $this->table_menu . " SET name = ?, category = ?, price = ?, image = ?, popularity = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
@@ -139,23 +105,14 @@ class Admin {
             $id
         ]);
     }
-    
-    /**
-     * Update a menu item's image
-     * @param int $itemId
-     * @param string $imageFileName
-     * @return bool
-     */
+
+    /* Update a menu item's image */
     public function updateMenuImage($itemId, $imageFileName) {
         $stmt = $this->conn->prepare("UPDATE menu_items SET image = ? WHERE id = ?");
         return $stmt->execute([$imageFileName, $itemId]);
     }
 
-    /**
-     * Delete menu item
-     * @param int $id
-     * @return bool
-     */
+    /* Delete menu item */
     public function deleteMenuItem($id) {
         $query = "DELETE FROM " . $this->table_menu . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
@@ -163,11 +120,7 @@ class Admin {
         return $stmt->execute();
     }
 
-    /**
-     * Delete order
-     * @param int $id
-     * @return bool
-     */
+    /* Delete order */
     public function deleteOrder($id) {
         $query = "DELETE FROM " . $this->table_orders . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
@@ -175,10 +128,7 @@ class Admin {
         return $stmt->execute();
     }
 
-    /**
-     * Get all users (excluding admins for user management)
-     * @return array
-     */
+    /* Get all users (excluding admin) */
     public function getAllUsers() {
         $query = "SELECT * FROM " . $this->table_users . " WHERE user_role != 'admin' ORDER BY user_id DESC";
         $stmt = $this->conn->prepare($query);
@@ -186,12 +136,8 @@ class Admin {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get users with pagination (excluding admins)
-     * @param int $page
-     * @param int $limit
-     * @return array
-     */
+   
+     /* Pagination */
     public function getUsersPaginated($page = 1, $limit = 5) {
         $offset = ($page - 1) * $limit;
         $query = "SELECT * FROM " . $this->table_users . " WHERE user_role != 'admin' ORDER BY user_id DESC LIMIT ? OFFSET ?";
@@ -202,12 +148,7 @@ class Admin {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get orders with pagination
-     * @param int $page
-     * @param int $limit
-     * @return array
-     */
+   
     public function getOrdersPaginated($page = 1, $limit = 10) {
         $offset = ($page - 1) * $limit;
         $query = "SELECT id, customer_name, total, order_date FROM " . $this->table_orders . " ORDER BY order_date DESC LIMIT ? OFFSET ?";
@@ -218,10 +159,7 @@ class Admin {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get total number of users (excluding admins)
-     * @return int
-     */
+    /* Total number of users */
     public function getTotalUsers() {
         $query = "SELECT COUNT(*) as total FROM " . $this->table_users . " WHERE user_role != 'admin'";
         $stmt = $this->conn->prepare($query);
@@ -230,11 +168,7 @@ class Admin {
         return $result['total'] ?? 0;
     }
 
-    /**
-     * Get user by ID
-     * @param int $id
-     * @return array
-     */
+    /* Get user by ID */
     public function getUserById($id) {
         $query = "SELECT * FROM " . $this->table_users . " WHERE user_id = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -243,11 +177,7 @@ class Admin {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Add new user
-     * @param array $data
-     * @return bool
-     */
+    /* Add new user */
     public function addUser($data) {
         try {
             // Check if email already exists
@@ -257,14 +187,12 @@ class Admin {
             $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
             
             if ($result['count'] > 0) {
-                // Email already exists
+                
                 return false;
             }
-            
-            // Hash the password
+          
             $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-            
-            // Insert user with default customer role
+        
             $query = "INSERT INTO " . $this->table_users . " (full_name, email, contact_number, nic, address, password, user_role) VALUES (?, ?, ?, ?, ?, ?, 'customer')";
             $stmt = $this->conn->prepare($query);
             
@@ -277,17 +205,11 @@ class Admin {
                 $hashedPassword
             ]);
         } catch (PDOException $e) {
-            // Handle database errors
             return false;
         }
     }
 
-    /**
-     * Update user
-     * @param int $id
-     * @param array $data
-     * @return bool
-     */
+    /* Update user */
     public function updateUser($id, $data) {
         try {
             // Check if email already exists for another user
@@ -297,11 +219,9 @@ class Admin {
             $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
             
             if ($result['count'] > 0) {
-                // Email already exists for another user
                 return false;
             }
             
-            // Build update query based on provided data
             $fields = [];
             $values = [];
             
@@ -320,13 +240,13 @@ class Admin {
             $fields[] = "address = ?";
             $values[] = $data['address'];
             
-            // Only update password if provided
+            // Update password if provided
             if (isset($data['password']) && !empty($data['password'])) {
                 $fields[] = "password = ?";
                 $values[] = password_hash($data['password'], PASSWORD_DEFAULT);
             }
             
-            $values[] = $id; // For WHERE clause
+            $values[] = $id; 
             
             // Update user
             $query = "UPDATE " . $this->table_users . " SET " . implode(', ', $fields) . " WHERE user_id = ? AND user_role != 'admin'";
@@ -334,16 +254,11 @@ class Admin {
             
             return $stmt->execute($values);
         } catch (PDOException $e) {
-            // Handle database errors
             return false;
         }
     }
 
-    /**
-     * Delete user (prevent deleting admin users)
-     * @param int $id
-     * @return bool
-     */
+    /* Delete user */
     public function deleteUser($id) {
         $query = "DELETE FROM " . $this->table_users . " WHERE user_id = ? AND user_role != 'admin'";
         $stmt = $this->conn->prepare($query);
@@ -351,10 +266,7 @@ class Admin {
         return $stmt->execute();
     }
 
-    /**
-     * Get total number of orders
-     * @return int
-     */
+    /* Get total number of orders */
     public function getTotalOrders() {
         $query = "SELECT COUNT(*) as total FROM " . $this->table_orders;
         $stmt = $this->conn->prepare($query);
@@ -363,10 +275,7 @@ class Admin {
         return $result['total'] ?? 0;
     }
 
-    /**
-     * Get total number of menu items
-     * @return int
-     */
+    /* Get total number of menu items */
     public function getTotalMenuItems() {
         $query = "SELECT COUNT(*) as total FROM " . $this->table_menu;
         $stmt = $this->conn->prepare($query);
@@ -375,10 +284,7 @@ class Admin {
         return $result['total'] ?? 0;
     }
 
-    /**
-     * Get total revenue from orders
-     * @return float
-     */
+    /* Get total revenue from orders */
     public function getTotalRevenue() {
         $query = "SELECT SUM(total) as revenue FROM " . $this->table_orders;
         $stmt = $this->conn->prepare($query);
@@ -387,10 +293,7 @@ class Admin {
         return floatval($result['revenue'] ?? 0);
     }
 
-    /**
-     * Get recent orders (limited to 10)
-     * @return array
-     */
+    /* Get recent orders */
     public function getRecentOrders() {
         $query = "SELECT id, customer_name, total, order_date FROM " . $this->table_orders . " ORDER BY order_date DESC LIMIT 10";
         $stmt = $this->conn->prepare($query);
