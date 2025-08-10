@@ -54,7 +54,7 @@ if (isset($_SESSION['flash_message'])) {
     unset($_SESSION['flash_type']);
 }
 
-// Handle AJAX request to get user data for editing
+
 if (($_GET['action'] ?? '') === 'get_user') {
     header('Content-Type: application/json');
     
