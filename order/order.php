@@ -1,18 +1,12 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    // If the user is not logged in, redirect them to the login page.
-    header('Location: ../reglogin/auth.php');
-    exit();
-}
-
 // The user ID should be retrieved from the session in a live environment.
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
     // Redirect or handle unauthenticated access
-    header('Location: auth.php');
+    header('Location: ../reglogin/auth.php');
     exit();
 }
 
