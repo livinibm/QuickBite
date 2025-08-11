@@ -54,7 +54,6 @@ if (isset($_SESSION['flash_message'])) {
     unset($_SESSION['flash_type']);
 }
 
-// Handle AJAX request to get user data for editing
 if (($_GET['action'] ?? '') === 'get_user') {
     header('Content-Type: application/json');
     
@@ -195,7 +194,7 @@ $totalRevenue = $admin->getTotalRevenue();
 $usersPage = $_GET['users_page'] ?? 1;
 $ordersPage = $_GET['orders_page'] ?? 1;
 $usersPerPage = 5;
-$ordersPerPage = 10;
+$ordersPerPage = 5;
 
 $users = $admin->getUsersPaginated($usersPage, $usersPerPage);
 $orders = $admin->getOrdersPaginated($ordersPage, $ordersPerPage);
@@ -213,7 +212,6 @@ $hasMoreOrders = ($ordersPage * $ordersPerPage) < $totalOrdersCount;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickBite Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Admin stylesheet with timestamp to prevent caching -->
     <link rel="stylesheet" href="css/admin.css?v=<?php echo time(); ?>">
 </head>
 <body>
