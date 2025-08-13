@@ -122,7 +122,14 @@ $conn->close();
                             <div class="quantity-controls">
                                 <input type="number" name="quantities[<?= $id ?>]" value="<?= $item['quantity'] ?>" min="1" class="quantity-input">
                             </div>
-                            <a href="remove_from_cart.php?item_id=<?= $id ?>"><button type="button" class="remove-btn">Remove</button></a>
+                            <a href="remove_from_cart.php?item_id=<?= $id ?>">
+                                <button 
+                                    type="button" 
+                                    class="remove-btn" 
+                                    onclick="return confirm('Are you sure you want to remove this item?');">
+                                    Remove
+                                </button>
+                            </a>
                         </div>
                         <div class="item-total">
                             <span>Rs <?= number_format($item['price'] * $item['quantity'], 2) ?></span>
