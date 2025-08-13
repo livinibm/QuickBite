@@ -54,6 +54,10 @@ if (isset($_SESSION['flash_message'])) {
     unset($_SESSION['flash_type']);
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a14c3c6ad7d2e61ffc3c9363d7a2c2912c7ca7e6
 if (($_GET['action'] ?? '') === 'get_user') {
     header('Content-Type: application/json');
     
